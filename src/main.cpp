@@ -36,10 +36,27 @@ int main()
   uWS::Hub h;
 
   PID pid;
-  // TODO: Initialize the pid variable.
+  // I manually tuned the hyperparameters. I generally understood what the
+  // effect of changing each parameter. My process was to change a parameter,
+  // run the simulator, and repeat over and over until I was happy with the
+  // results.
+
+  // Increasing Kp made the car correct the steering angle sharply. Had to find
+  // just the right balance as I didn't want the car to overshoot too much
+  // especially on the curves. Overshooting on the curves could cause
+  // uncontrollable oscillations.
   double Kp = 0.25;
+
+  // Changing Ki had very little visible effect. One small effect I did notice
+  // was a large Ki made the oscillating towards a stable straight drive
+  // longer. In other words, the car seemed oscillate more before stabilizing.
   double Ki = 0.002;
+
+  // The Kd param helped with reducing the overshooting effect of the Kp param.
+  // Tuning this param together with Kp, made it so the car could correctly
+  // negotiate tight turns but not go into an uncontrolled oscillattng state.
   double Kd = 9.3;
+
   pid.Init(Kp, Ki, Kd);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
